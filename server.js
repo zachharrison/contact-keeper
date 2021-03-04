@@ -7,6 +7,9 @@ const PORT = process.env.PORT || 5000;
 // CONNECT DATABASE 
 connectDB();
 
+// INIT MIDDLEWARE
+app.use(express.json({ extended: false }));
+
 app.get('/', (req, res) => res.json({ msg: 'Hello World!' }))
 
 // ROUTES 
