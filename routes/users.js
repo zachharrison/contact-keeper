@@ -39,7 +39,8 @@ router.post('/', [
     const salt = await bcrypt.genSalt(10);
 
     user.password = await bcrypt.hash(password, salt);
-
+    
+    // IF ALL IS GOOD WE WANT TO SAVE USER TO THE DB AND GET USERS ID THEN SEND BACK THE TOKEN 
     await user.save();
 
     const payload = {
