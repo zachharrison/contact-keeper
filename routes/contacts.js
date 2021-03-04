@@ -71,7 +71,6 @@ router.put('/:id', auth, async (req, res) => {
     // IF USER DOES NOT HAVE A CONTACT WITH THE ID THAT IS PASSED IN
     if(!contact) {
       return res.status(404).json({ msg: 'Contact not found' });
-
     } else if (contact.user.toString() !== req.user.id) { // CHECK TO SEE IF THE USER OWNS THE CONTACT THAT THEY ARE TRYING TO EDIT
       return res.status(401).json({ msg: 'Not authorized' });
     }
@@ -79,7 +78,6 @@ router.put('/:id', auth, async (req, res) => {
     contact = await Contact.findByIdAndUpdate(req.params.id, { $set: contactFields }, { new: true } );
 
     res.json(contact);
-
 
   } catch (error) {
     console.error(error.message);
@@ -90,8 +88,25 @@ router.put('/:id', auth, async (req, res) => {
 // @ROUTE     DELETE api/contacts/:id
 // @DESC      DELETE A CONTACT FOR A USER
 // @ACCESS    PRIVATE
-router.delete('/:id', (req, res) => {
-  res.send('Delete contact');
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    let contact = await Contact.findById(req.params.id);
+
+    // IF USER DOES NOT HAVE A CONTACT WITH THE ID THAT IS PASSED IN
+    if(!contact) {
+      return res.status(404).json({ msg: 'Contact not found' });
+    } else if (contact.user.toString() !== req.user.id) { // CHECK TO SEE IF THE USER OWNS THE CONTACT THAT THEY ARE TRYING TO DELETE
+      return res.status(401).json({ msg: 'Not authorized' });
+    }
+
+    await Contact.findByIdAndRemove(req.params.id);
+
+    res.json({ msg: 'Contact removed' });
+
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
 });
 
 module.exports = router;
