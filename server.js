@@ -19,7 +19,7 @@ app.use('/api/contacts', require('./routes/contacts'));
 // SET STATIC FOLDER
 app.use(express.static('build'));
 
-app.get('*', (req, res) =>
+app.get('/*', (req, res) =>
   res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
 );
 
